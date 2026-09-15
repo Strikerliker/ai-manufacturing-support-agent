@@ -6,6 +6,38 @@ from typing import Iterable
 
 TOKEN_RE = re.compile(r"[a-z0-9][a-z0-9_-]+", re.IGNORECASE)
 HEADING_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$")
+STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "because",
+    "by",
+    "for",
+    "from",
+    "how",
+    "i",
+    "in",
+    "is",
+    "it",
+    "my",
+    "of",
+    "on",
+    "or",
+    "the",
+    "this",
+    "to",
+    "was",
+    "what",
+    "when",
+    "where",
+    "why",
+    "will",
+    "with",
+}
 
 
 @dataclass(frozen=True)
@@ -17,7 +49,11 @@ class Passage:
 
 
 def tokenize(text: str) -> set[str]:
-    return {match.group(0).lower() for match in TOKEN_RE.finditer(text)}
+    return {
+        token
+        for match in TOKEN_RE.finditer(text)
+        if (token := match.group(0).lower()) not in STOPWORDS
+    }
 
 
 def chunk_markdown(source: str, text: str) -> list[Passage]:
@@ -62,7 +98,13 @@ def score_passage(question: str, passage: Passage) -> float:
     return round((coverage * 0.78) + (density * 0.22) + title_bonus, 6)
 
 
-def retrieve(question: str, passages: Iterable[Passage], *, top_k: int = 4, min_score: float = 0.08) -> list[Passage]:
+def retrieve(
+    question: str,
+    passages: Iterable[Passage],
+    *,
+    top_k: int = 4,
+    min_score: float = 0.08,
+) -> list[Passage]:
     ranked: list[Passage] = []
     for passage in passages:
         score = score_passage(question, passage)
