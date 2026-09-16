@@ -19,6 +19,10 @@ A grounded AI support assistant for manufacturing IT and ERP/MRP troubleshooting
 
 ## Architecture
 
+![AI Manufacturing Support Agent AWS Architecture](docs/ai-manufacturing-support-aws-architecture.svg)
+
+The diagram shows the implemented request path and AWS controls, with Amazon OpenSearch Service and direct ERP integration clearly marked as optional extension paths rather than current production-deployment claims.
+
 ```text
 Support User
     |
@@ -51,6 +55,7 @@ CloudWatch receives API and Lambda operational logs.
 - `terraform/` — S3, Lambda, API Gateway, IAM, CloudWatch, and Bedrock permissions
 - `docs/architecture.md` — trust boundaries, controls, and design decisions
 - `docs/deployment.md` — deployment and verification procedure
+- `docs/ai-manufacturing-support-aws-architecture.svg` — AWS architecture diagram
 - `dashboard.html` — project dashboard with live GitHub Actions status
 - `.github/workflows/validate.yml` — CI validation
 
